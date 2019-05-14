@@ -5,11 +5,18 @@
     <br>
     <div id="Venues">
       <!-- filtering by city options -->
-      <div>
+      <div id="filters">
+        Search
+        <input v-model="filterVenueName" placeholder="Search" @input="getVenues()" />
         Filter by city:
         <select name="cityFilter" @change="onCityFilterChange($event)">
           <option selected="selected" value>No filter</option>
           <option v-for="city in cities" :value="city" v-bind:key="city">{{ city }}</option>
+        </select>
+        Filter by category:
+        <select name="categoryFilter" @change="onCategoryFilterChange($event)">
+          <option selected="selected" value>No filter</option>
+          <option v-for="category in categories" :value="category.categoryId" v-bind:key="category.categoryId">{{ category.categoryName }}</option>
         </select>
       </div>
       <!-- display table of venues -->
@@ -18,7 +25,6 @@
           class="venueTable"
           v-for="venue in venues"
           v-bind:key="venue.id"
-          v-if="venue.city === filterCity || filterCity == ''"
         >
           <div class="venuePhoto">
             <img v-bind:src="getVenuePrimaryImage(venue)" height="100" width="100">
@@ -49,7 +55,9 @@ export default {
       categories: [], //stores all venue categories
       cities: [], //stores all cities that are bound to venues, only unique cities
       filterCity: "", //the city that is currently being filtered by
-      defaultVenuePhoto: defaultPhoto
+      filterCategory: "",
+      defaultVenuePhoto: defaultPhoto,
+      filterVenueName: ""
     };
   },
   mounted: function() {
@@ -58,7 +66,23 @@ export default {
   methods: {
     getVenues: function() {
       //gets the venues
-      this.$http.get(this.serverAddress + "venues/").then(
+      var uri = this.serverAddress + "venues/";
+      var questionMarkFlag = false;
+      if (this.filterCity != ""){
+        uri = uri + "?city=" + this.filterCity;
+        questionMarkFlag = true;
+      }
+      if (this.filterVenueName !== ""){
+        if (!questionMarkFlag) uri = uri + "?q=" + this.filterVenueName;
+        else uri = uri + "&q=" + this.filterVenueName;
+      }
+      if (this.filterCategory !== ""){
+        if (!questionMarkFlag) uri = uri + "?categoryId=" + this.filterCategory;
+        else uri = uri + "&categoryId=" + this.filterCategory;
+      }
+
+
+      this.$http.get(uri).then(
         function(response) {
           this.venues = response.data;
           this.getCities(); //Needs to be run once venues are got correctly, not when mounted
@@ -71,7 +95,6 @@ export default {
     },
     getCities: function() {
       //gets the cities from the current venues
-      console.log(this.venues);
       for (var i = 0; i < this.venues.length; i++) {
         if (!this.cities.includes(this.venues[i].city)) {
           this.cities.push(this.venues[i].city);
@@ -101,6 +124,12 @@ export default {
     onCityFilterChange: function(event) {
       //change the filter city when the drop down is changed
       this.filterCity = event.target.value;
+      this.getVenues();
+    },
+    onCategoryFilterChange: function(event) {
+      //change the filter city when the drop down is changed
+      this.filterCategory = event.target.value;
+      this.getVenues();
     },
     getVenuePrimaryImage: function(venue) {
       if (venue.primaryPhoto === null) {
