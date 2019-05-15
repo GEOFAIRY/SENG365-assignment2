@@ -27,10 +27,10 @@ Vue.mixin({
       serverAddress: 'http://localhost:4941/api/v1/'
     }
   }
-})
+});
 
 new Vue({
   el: '#app',
   router: router,
   render: h => h(App)
-})
+});
