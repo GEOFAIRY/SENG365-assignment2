@@ -1,0 +1,98 @@
+.venueTable {
+    display: inline-grid;
+    grid-gap: 10px;
+    padding: 10px;
+    margin: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 25px;
+    border-color: rgba(0, 0, 0, 0.212);
+}
+
+#venuePrimaryThumbnail {
+    width: 330px;
+    height: 280px;
+}
+
+#filters {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+    border-right: 2px solid black;
+    background: gray;
+}
+
+#filters p {
+    padding: 8px 3px 0px 8px;
+    text-decoration: none;
+    font-size: 15px;
+    color: black;
+    display: block;
+    margin-left: 0px;
+    margin-right: 3px;
+}
+
+#venueSearch {
+    padding: 6px 8px 6px 8px;
+    text-decoration: none;
+    font-size: 15px;
+    color: black;
+    display: block;
+    width: 95%;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+#filters select {
+    padding: 6px 8px 6px 8px;
+    text-decoration: none;
+    font-size: 15px;
+    width: 95%;
+    color: black;
+    display: block;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+#filters h1 {
+    color: black;
+    padding: 0px, 0px, 6px, 16px;
+}
+
+#filters span {
+    padding: 8px 3px 0px 8px;
+    text-decoration: none;
+    font-size: 15px;
+    color: black;
+    margin-left: 0px;
+    margin-right: 3px;
+}
+
+#filters a {
+    padding: 8px 3px 0px 8px;
+    text-decoration: none;
+    font-size: 15px;
+    margin-left: 0px;
+    margin-right: 3px;
+    cursor:pointer;
+}
+
+#filters .starFilterButton {
+    padding: 8px 3px 0px 8px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+#Venues {
+    margin-left: 250px;
+}
+
+body, html {
+    height: 100%;
+    background: rgb(199, 199, 199);
+}
