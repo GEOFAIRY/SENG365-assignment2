@@ -198,7 +198,16 @@ export default {
       this.$http.get(uri).then(
         function(response) {
           this.venues = response.data;
-          console.log(this.venues)
+          
+          for (var i = 0; i < this.venues.length; i++) {
+            if (this.venues[i].meanStarRating === null) {
+              this.venues[i].meanStarRating = 3;
+            }
+            if (this.venues[i].modeCostRating === null) {
+              this.venues[i].modeCostRating = 0;
+            }
+          }
+
           this.getCities(); //Needs to be run once venues are got correctly, not when mounted
         },
         function(error) {

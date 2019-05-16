@@ -25,7 +25,8 @@ exports.retrieveByVenueId = async function (query, venueId) {
 function buildSearch(query, venueId) {
     let searchSQL = 'SELECT review_body, star_rating, cost_rating, time_posted, user_id, username\n' +
         'FROM Review JOIN User ON review_author_id = user_id\n' +
-        'WHERE reviewed_venue_id = ?\n';
+        'WHERE reviewed_venue_id = ?\n' +
+        'ORDER BY time_posted DESC\n';
     let values = [venueId];
 
     // LIMIT and OFFSET

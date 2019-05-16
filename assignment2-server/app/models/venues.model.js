@@ -68,7 +68,7 @@ function buildSearchSQL(query) {
         values.push(query.categoryId);
     }
     if (typeof query.maxCostRating !== 'undefined') {
-        conditions.push('mode_cost_rating <= ?');
+        conditions.push('(mode_cost_rating <= ? OR mode_cost_rating IS NULL)');
         values.push(query.maxCostRating);
     }
     if (query.adminId) {
@@ -82,7 +82,8 @@ function buildSearchSQL(query) {
     // GROUP BY and HAVING condition
     searchSQL += 'GROUP BY venue_id\n';
     if (query.minStarRating) {
-        searchSQL += 'HAVING mean_star_rating >= ?\n';
+        if (query.minStarRating > 3) searchSQL += 'HAVING mean_star_rating >= ?\n';
+        else searchSQL += "HAVING (mean_star_rating >= ? OR mean_star_rating IS NULL)\n";
         values.push(query.minStarRating);
     }
 

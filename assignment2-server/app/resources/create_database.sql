@@ -104,8 +104,9 @@ CREATE VIEW VenueCostRatingMaxOccurs AS
 
 CREATE VIEW ModeCostRating AS
   (
-    SELECT A.venue_id, A.cost_rating AS mode_cost_rating, A.occurs AS occurrences
+    SELECT A.venue_id, min(A.cost_rating) AS mode_cost_rating, A.occurs AS occurrences
     FROM VenueCostRatingOccurs A
     INNER JOIN VenueCostRatingMaxOccurs B
     ON A.venue_id = B.venue_id AND A.occurs = B.occurs
+    GROUP BY venue_id
   );
