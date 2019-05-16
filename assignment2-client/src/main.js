@@ -1,18 +1,27 @@
 import Vue from 'vue'
 import App from './App.vue'
-import Venues from './Venue.vue'
+import Venues from './Venues.vue'
+import Venue from './Venue.vue'
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
+require('./assets/styles/style.css')
+
 Vue.http.options.emulateJSON = false;
 
 const routes = [
   {
     path: "/",
+    name: "Venues",
     component: Venues
+  },
+  {
+    path: "/venue/:venueid",
+    name: "Venue",
+    component: Venue
   }
 ];
 
