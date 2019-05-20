@@ -33,155 +33,188 @@
         <p style="display: none" id="longDescription">{{ venue.longDescription }}</p>
         <a v-on:click="showHideDescription()">{{ longDescOutput }}</a>
       </div>
+
+      <div id="reviews" v-for="review in reviews">
+        <div class="container">
+          <div class="panel panel-default">
+            <div class="panel-heading">{{ review.reviewAuthor.username }}</div>
+            <div class="panel-body">★{{ review.starRating }} ${{ review.costRating }}</div>
+            <div class="panel-footer">{{ review.reviewBody }}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Carousel, Slide } from 'vue-carousel';
+import { Carousel, Slide } from "vue-carousel";
 
 export default {
-    data() {
-        return {
-            error: "",
-            errorFlag: false,
-            venue: {
-            "venueName": "",
-            "admin": {
-                "userId": "",
-                "username": ""
-            },
-            "category": {
-                "categoryId": "",
-                "categoryName": "",
-                "categoryDescription": ""
-            },
-            "city": "",
-            "shortDescription": "",
-            "longDescription": "",
-            "dateAdded": "",
-            "address": "",
-            "latitude": "",
-            "longitude": "",
-            "photos": []
-            },
-            venueid: this.$route.params.venueid,
-            images: [],
-            index: null,
-            link: "http://localhost:4941/api/v1/venues/" + this.$route.params.venueid + "/photos/",
-            descriptionShown: false,
-            longDescOutput: "More",
-            costRating: 0,
-            starRating: 0
-        };
+  data() {
+    return {
+      error: "",
+      errorFlag: false,
+      venue: {
+        venueName: "",
+        admin: {
+          userId: "",
+          username: ""
+        },
+        category: {
+          categoryId: "",
+          categoryName: "",
+          categoryDescription: ""
+        },
+        city: "",
+        shortDescription: "",
+        longDescription: "",
+        dateAdded: "",
+        address: "",
+        latitude: "",
+        longitude: "",
+        photos: []
+      },
+      venueid: this.$route.params.venueid,
+      images: [],
+      index: null,
+      link:
+        "http://localhost:4941/api/v1/venues/" +
+        this.$route.params.venueid +
+        "/photos/",
+      descriptionShown: false,
+      longDescOutput: "More",
+      costRating: 0,
+      starRating: 0,
+      reviews: {}
+    };
+  },
+  watch: {
+    $route() {
+      this.venue = {
+        venueName: "",
+        admin: {
+          userId: "",
+          username: ""
+        },
+        category: {
+          categoryId: "",
+          categoryName: "",
+          categoryDescription: ""
+        },
+        city: "",
+        shortDescription: "",
+        longDescription: "",
+        dateAdded: "",
+        address: "",
+        latitude: "",
+        longitude: "",
+        photos: []
+      };
+      this.getVenue();
+    }
+  },
+  beforeMount: function() {
+    if (this.$route.params.venueid === null) {
+      console.log("passed");
+      this.$router.push({ name: "Venues" });
+    }
+  },
+  mounted: function() {
+    this.getVenue();
+  },
+  methods: {
+    checkLoading: function() {
+      return this.venue.venueName == "";
     },
-    watch: {
-      '$route'() {
-        this.venue = {
-            "venueName": "",
-            "admin": {
-                "userId": "",
-                "username": ""
-            },
-            "category": {
-                "categoryId": "",
-                "categoryName": "",
-                "categoryDescription": ""
-            },
-            "city": "",
-            "shortDescription": "",
-            "longDescription": "",
-            "dateAdded": "",
-            "address": "",
-            "latitude": "",
-            "longitude": "",
-            "photos": []
-            };
-        this.getVenue();
+    getVenue: function() {
+      this.$http
+        .get(this.serverAddress + "venues/" + this.$route.params.venueid)
+        .then(
+          function(response) {
+            this.venue = response.data;
+            this.venueid = this.$route.params.venueid;
+          },
+          function(error) {
+            this.error = error;
+            this.errorFlag = true;
+          }
+        )
+        .then(function() {
+          for (var i = 0; i < this.venue.photos.length; i++) {
+            this.images.push(this.venue.photos[i].photoFilename);
+          }
+          if (this.venueid === null) {
+            this.$router.push({ name: "Venues" });
+          }
+          this.getStarRating();
+          this.getCostRating();
+          this.getReviews();
+        });
+    },
+    getVenueImageUrl: function(photo) {
+      //gets the primary image get uri of a venue
+      return this.link + photo;
+    },
+    showHideDescription: function() {
+      if (this.descriptionShown) {
+        document.getElementById("longDescription").style.display = "none";
+        this.descriptionShown = false;
+        this.longDescOutput = "More";
+      } else {
+        document.getElementById("longDescription").style.display = "block";
+        this.descriptionShown = true;
+        this.longDescOutput = "Less";
       }
     },
-    beforeMount: function() {
-        if(this.$route.params.venueid === null) {
-            console.log("passed")
-            this.$router.push( { name: "Venues" } )
+    getStarRating: function() {
+      this.$http.get(this.serverAddress + "venues/").then(
+        function(response) {
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].venueId == this.venueid) {
+              this.starRating = response.data[i].meanStarRating;
+            }
+          }
+        },
+        function(error) {
+          this.error = error;
+          this.errorFlag = true;
         }
+      );
     },
-    mounted: function() {
-        this.getVenue()
+    getCostRating: function() {
+      this.$http.get(this.serverAddress + "venues/").then(
+        function(response) {
+          for (var i = 0; i < response.data.length; i++) {
+            if (response.data[i].venueId == this.venueid) {
+              this.costRating = response.data[i].modeCostRating;
+              break;
+            }
+          }
+        },
+        function(error) {
+          this.error = error;
+          this.errorFlag = true;
+        }
+      );
     },
-    methods: {
-        checkLoading: function() {
-            return (this.venue.venueName == "");
-        },
-        getVenue: function() {
-            this.$http.get(this.serverAddress + 'venues/' + this.$route.params.venueid)
-            .then(function(response) {
-                this.venue = response.data;
-                this.venueid = this.$route.params.venueid;
-            },
-            function(error) {
-                this.error = error;
-                this.errorFlag = true;
-            }).then(function(){
-                for (var i = 0; i < this.venue.photos.length; i++) {
-                    this.images.push(this.venue.photos[i].photoFilename)
-                }
-                if(this.venueid === null) {
-                    this.$router.push( { name: "Venues" } )
-                }
-                this.getStarRating()
-                this.getCostRating()
-            });
-        },
-        getVenueImageUrl: function(photo) {
-        //gets the primary image get uri of a venue
-        return (this.link + photo);
-        },
-        showHideDescription: function() {
-            
-            if (this.descriptionShown) {
-                document.getElementById("longDescription").style.display = "none"
-                this.descriptionShown = false;
-                this.longDescOutput = "More"
-            } else {
-                document.getElementById("longDescription").style.display = "block"
-                this.descriptionShown=true;
-                this.longDescOutput = "Less"
-            }
-        },
-        getStarRating: function(){
-            this.$http.get(this.serverAddress + "venues/").then(
-            function(response) {
-                for (var i = 0; i < response.data.length; i++){
-                    if (response.data[i].venueId == this.venueid) {
-                        this.starRating = response.data[i].meanStarRating
-                    }
-                }
-            },
-            function(error) {
-                this.error = error;
-                this.errorFlag = true;
-            }
-        )},
-        getCostRating: function(){
-            this.$http.get(this.serverAddress + "venues/").then(
-            function(response) {
-                for (var i = 0; i < response.data.length; i++){
-                    if (response.data[i].venueId == this.venueid) {
-                        this.costRating = response.data[i].modeCostRating
-                        break;
-                    }
-                }
-            },
-            function(error) {
-                this.error = error;
-                this.errorFlag = true;
-            }
-        )},
-    },
-    components: {
-      Carousel,
-      Slide
+    getReviews: function() {
+      this.$http
+        .get(this.serverAddress + "venues/" + this.venueid + "/reviews")
+        .then(
+          function(response) {
+            this.reviews = response.data;
+          },
+          function(error) {
+            this.error = error;
+            this.errorFlag = true;
+          }
+        );
     }
-}
+  },
+  components: {
+    Carousel,
+    Slide
+  }
+};
 </script>
