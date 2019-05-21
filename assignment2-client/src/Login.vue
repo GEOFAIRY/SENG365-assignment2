@@ -4,6 +4,12 @@
       <p v-if="username != ''">Logged in as: {{ username }}</p>
       <p v-else>Logged in as: {{ emailAddress }}</p>
       <button type="button" class="btn btn-primary" v-on:click="logout()">Logout</button>
+      <router-link :to="{name: 'AddVenue'}">
+        <button type="button" class="btn btn-primary">New venue</button>
+      </router-link>
+      <router-link :to="{name: 'MyVenues'}">
+        <button type="button" class="btn btn-primary">My venues</button>
+      </router-link>
     </div>
 
     <div v-else id="notLogged">

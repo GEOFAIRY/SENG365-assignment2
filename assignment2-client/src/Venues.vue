@@ -3,10 +3,7 @@
     <!-- filtering options -->
     <div id="sidebar">
       <h1>Venues</h1>
-      <router-link :to="{name: 'AddVenue'}">
-        <button type="button" class="btn btn-primary">New venue</button>
-      </router-link>
-      
+    
       <p>Search</p>
       <input id="venueSearch" v-model="filterVenueName" placeholder="Search" @input="getVenues()">
       <p>Filter by city:</p>

@@ -52,7 +52,7 @@
         <input type="number" v-model="longitude" placeholder="Longitude">
         <br>
         <br>
-        <button v-on:click="submitVenue()">Submit</button>
+        <button button type="button" class="btn btn-primary" v-on:click="submitVenue()">Submit</button>
       </div>
     </div>
   </div>

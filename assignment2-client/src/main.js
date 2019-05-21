@@ -3,6 +3,7 @@ import App from './App.vue'
 import Venues from './Venues.vue'
 import Venue from './Venue.vue'
 import AddVenue from './AddVenue.vue'
+import MyVenues from './MyVenues.vue'
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -25,9 +26,14 @@ const routes = [
     component: Venue
   },
   {
-    path: "/venue",
+    path: "/addVenue",
     name: "AddVenue",
     component: AddVenue
+  },
+  {
+    path: "/myvenues",
+    name: "MyVenues",
+    component: MyVenues
   },
 ];
 
