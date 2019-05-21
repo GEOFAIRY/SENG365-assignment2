@@ -10,7 +10,7 @@
   cursor: pointer;
 }
 
-.userInput input, textarea {
+.userInput input, textarea, select,textarea {
   position: absolute;
   right: 5px;
 }

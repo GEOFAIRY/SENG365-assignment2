@@ -37,12 +37,79 @@
       </div>
 
       <h2>Reviews</h2>
+      <div
+        v-if="loggedToken != null && venue.admin.userId != $getUserId() && !alreadyReviewed"
+        id="addReview"
+      >
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#ReviewModal"
+        >New Review</button>
+      </div>
       <div id="reviews" v-for="review in reviews">
         <div class="container">
           <div class="panel panel-default">
             <div class="panel-heading">{{ review.reviewAuthor.username }}</div>
             <div class="panel-body">★{{ review.starRating }} ${{ review.costRating }}</div>
             <div class="panel-footer">{{ review.reviewBody }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="ReviewModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="ReviewModal"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ReviewModal">Login User</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Enter Review:</p>
+              <div class="userInput">
+                <br>Cost Rating
+                <select id="costRatingReview">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+                <br>Star Rating
+                <select id="starRatingReview">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <br>
+                <br>details
+                <br>
+                <textarea
+                  v-model="reviewBody"
+                  name="reviewDetails"
+                  id="reviewDetails"
+                  cols="75"
+                  rows="10"
+                  placeholder="Enter some details"
+                ></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary" v-on:click="postReview()">Post Review</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
           </div>
         </div>
       </div>
@@ -89,7 +156,10 @@ export default {
       longDescOutput: "More",
       costRating: 0,
       starRating: 0,
-      reviews: {}
+      reviews: {},
+      loggedToken: "",
+      alreadyReviewed: false,
+      reviewBody: ""
     };
   },
   watch: {
@@ -144,6 +214,7 @@ export default {
           }
         )
         .then(function() {
+          this.loggedToken = this.$getToken();
           for (var i = 0; i < this.venue.photos.length; i++) {
             this.images.push(this.venue.photos[i].photoFilename);
           }
@@ -210,6 +281,45 @@ export default {
         .then(
           function(response) {
             this.reviews = response.data;
+            this.checkReview();
+          },
+          function(error) {
+            this.error = error;
+            this.errorFlag = true;
+          }
+        );
+    },
+    checkReview: function() {
+      for (var i = 0; i < this.reviews.length; i++) {
+        console.log(
+          parseInt(this.reviews[i].reviewAuthor.userId) === this.$getUserId()
+        );
+        if (
+          parseInt(this.reviews[i].reviewAuthor.userId) === this.$getUserId()
+        ) {
+          console.log("here");
+          this.alreadyReviewed = true;
+        }
+      }
+    },
+    postReview: function() {
+      var starRating = document.getElementById('starRatingReview').value;
+      var costRating = document.getElementById('costRatingReview').value;
+      this.$http
+        .post(
+          this.serverAddress + "venues/" + this.venueid + "/reviews",
+          {
+            reviewBody: this.reviewBody,
+            starRating: parseInt(starRating),
+            costRating: parseInt(costRating)
+          },
+          { headers: { "x-authorization": this.$getToken() } }
+        )
+        .then(
+          function(response) {
+            $("#ReviewModal").modal("hide");
+            this.$router.push({ name: "Venues" });
+
           },
           function(error) {
             this.error = error;
