@@ -120,8 +120,7 @@ export default {
       familyName: "",
       username: "",
       emailAddress: "",
-      password: "",
-      loggedIn: false
+      password: ""
     };
   },
   methods: {
@@ -170,7 +169,7 @@ export default {
           })
           .then(function(response) {
             localStorage.setItem("authToken", response.data["token"]);
-            localStorage.setItem("id", response.data["id"]);
+            localStorage.setItem("id", response.data["userId"]);
             $("#LoginUserModal").modal("hide");
             this.loggedIn = true
           })
@@ -190,7 +189,8 @@ export default {
           })
           .then(function(response) {
             localStorage.setItem("authToken", response.data["token"]);
-            localStorage.setItem("id", response.data["id"]);
+            localStorage.setItem("id", response.data["userId"]);
+            console.log(this.$getUserId())
             $("#LoginUserModal").modal("hide");
             this.loggedIn = true
           })
@@ -207,13 +207,7 @@ export default {
     loginUser: function() {
       this.login(this.username, this.emailAddress, this.password)
     },
-    getToken: function () {
-      return localStorage.getItem("authToken");
-    },
 
-    getUserId: function () {
-      return parseInt(localStorage.getItem("id"));
-    },
     logout: function() {
         localStorage.removeItem("authToken")
         localStorage.removeItem("id")

@@ -3,6 +3,10 @@
     <!-- filtering options -->
     <div id="sidebar">
       <h1>Venues</h1>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#CreateVenueModal">New venue</button>
+
+
+      
       <p>Search</p>
       <input id="venueSearch" v-model="filterVenueName" placeholder="Search" @input="getVenues()">
       <p>Filter by city:</p>

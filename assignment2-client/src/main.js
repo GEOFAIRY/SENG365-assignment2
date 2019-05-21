@@ -35,11 +35,19 @@ Vue.mixin({
     return {
       serverAddress: 'http://localhost:4941/api/v1/',
       // serverAddress: 'http://csse-s365.canterbury.ac.nz:4001/api/v1/',
+      loggedIn: false
     }
+  },
+  methods: {
+    $getToken: function () {
+      return localStorage.getItem("authToken");
+    },
+    $getUserId: function () {
+      return parseInt(localStorage.getItem("id"));
+    },
   }
 });
 
-Vue.prototype.$eventHub = new Vue(); //global event bus
 
 new Vue({
   el: '#app',
