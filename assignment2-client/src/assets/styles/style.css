@@ -10,6 +10,27 @@
   cursor: pointer;
 }
 
+.userInput input {
+  position: absolute;
+  right: 5px;
+}
+
+
+#notLogged {
+  position: fixed;
+  bottom: 0px;
+  left: 0px; 
+  z-index: 2;
+}
+
+#loggedIn {
+  color: black;
+  position: fixed;
+  bottom: 0px;
+  left: 0px; 
+  z-index: 2;
+}
+
 #venuePrimaryThumbnail {
   width: 330px;
   height: 280px;

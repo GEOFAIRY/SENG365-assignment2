@@ -33,11 +33,16 @@ const router = new VueRouter({
 Vue.mixin({
   data: function() {
     return {
-      serverAddress: 'http://localhost:4941/api/v1/'
-      //serverAddress: 'http://csse-s365.canterbury.ac.nz:4001/api/v1/'
+      serverAddress: 'http://localhost:4941/api/v1/',
+      // serverAddress: 'http://csse-s365.canterbury.ac.nz:4001/api/v1/',
+
+      authToken: '',
+      loggedUserId: null
     }
   }
 });
+
+Vue.prototype.$eventHub = new Vue(); //global event bus
 
 new Vue({
   el: '#app',

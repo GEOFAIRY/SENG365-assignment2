@@ -158,9 +158,9 @@
       </div>
 
       <div id="forwardBack">
-        <a id="nextLink" @click="nextVenues()">next</a>
-        <span>Viewing: {{ displayVenuesCount() }}</span>
         <a id="previousLink" @click="previousVenues()">back</a>
+        <span>Viewing: {{ displayVenuesCount() }}</span>        
+        <a id="nextLink" @click="nextVenues()">next</a>
       </div>
     </div>
 
@@ -298,7 +298,7 @@ export default {
           questionMarkFlag = true;
         } else uri = uri + "&maxCostRating=" + this.maxCostRating;
       }
-
+      
       // make the request
       this.$http.get(uri).then(
         function(response) {

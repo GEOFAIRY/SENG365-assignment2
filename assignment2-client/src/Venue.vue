@@ -24,16 +24,19 @@
       <div class="wrapper-parent">
         <carousel paginationActiveColor="#73c000" autoplayTimeout:1000>
           <slide v-for="image in images" v-bind:key="image">
-            <img :src="getVenueImageUrl(image)" height="400px">
+            <img v-if="image === 'default'" src="./assets/default.png" height="400px">
+            <img v-else :src="getVenueImageUrl(image)" height="400px">
           </slide>
         </carousel>
       </div>
       <div id="description">
+        <h2>About</h2>
         <p>{{ venue.shortDescription }}</p>
         <p style="display: none" id="longDescription">{{ venue.longDescription }}</p>
         <a v-on:click="showHideDescription()">{{ longDescOutput }}</a>
       </div>
 
+      <h2>Reviews</h2>
       <div id="reviews" v-for="review in reviews">
         <div class="container">
           <div class="panel panel-default">
@@ -143,6 +146,9 @@ export default {
         .then(function() {
           for (var i = 0; i < this.venue.photos.length; i++) {
             this.images.push(this.venue.photos[i].photoFilename);
+          }
+          if (this.images.length === 0) {
+            this.images.push("default");
           }
           if (this.venueid === null) {
             this.$router.push({ name: "Venues" });
