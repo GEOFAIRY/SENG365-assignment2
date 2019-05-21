@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import Venues from './Venues.vue'
 import Venue from './Venue.vue'
+import AddVenue from './AddVenue.vue'
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -22,7 +23,12 @@ const routes = [
     path: "/venue/:venueid",
     name: "Venue",
     component: Venue
-  }
+  },
+  {
+    path: "/venue",
+    name: "AddVenue",
+    component: AddVenue
+  },
 ];
 
 const router = new VueRouter({

@@ -10,11 +10,15 @@
   cursor: pointer;
 }
 
-.userInput input {
+.userInput input, textarea {
   position: absolute;
   right: 5px;
 }
 
+.venueInput input, textarea {
+  position: relative;
+  right: 5px;
+}
 
 #notLogged {
   position: fixed;

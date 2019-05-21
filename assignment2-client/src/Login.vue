@@ -172,6 +172,7 @@ export default {
             localStorage.setItem("id", response.data["userId"]);
             $("#LoginUserModal").modal("hide");
             this.loggedIn = true
+            this.$router.push({ name: "Venues" });
           })
           .catch(function(error) {
             console.log(error);
@@ -193,6 +194,7 @@ export default {
             console.log(this.$getUserId())
             $("#LoginUserModal").modal("hide");
             this.loggedIn = true
+            this.$router.push({ name: "Venues" });
           })
           .catch(function(error) {
             console.log(error);
