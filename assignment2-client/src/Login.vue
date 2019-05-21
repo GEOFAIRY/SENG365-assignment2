@@ -1,8 +1,10 @@
 <template>
   <div>
-      <div v-if="authToken != ''" id=loggedIn>
-          <p>Logged in as: {{ username }}</p>
-      </div>
+    <div v-if="loggedIn === true" id="loggedIn">
+      <p v-if="username != ''">Logged in as: {{ username }}</p>
+      <p v-else>Logged in as: {{ emailAddress }}</p>
+      <button type="button" class="btn btn-primary" v-on:click="logout()">Logout</button>
+    </div>
 
     <div v-else id="notLogged">
       <button
@@ -11,6 +13,12 @@
         data-toggle="modal"
         data-target="#RegisterUserModal"
       >Register</button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#LoginUserModal"
+      >Login</button>
     </div>
 
     <div
@@ -55,6 +63,48 @@
         </div>
       </div>
     </div>
+
+    <div
+      class="modal fade"
+      id="LoginUserModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="LoginUserModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="LoginUserModalLabel">Login User</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Enter details to login:</p>
+            <div class="userInput">
+              <br>Username or Email
+              <input
+                v-model="username"
+                placeholder="Username"
+                maxlength="64"
+                required
+              >
+              <br>
+              <br>Email Address
+              <input v-model="emailAddress" placeholder="Email Address" required>
+              <br>
+              <br>Password
+              <input type="password" v-model="password" placeholder="Password" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" v-on:click="loginUser()">Login User</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,7 +120,8 @@ export default {
       familyName: "",
       username: "",
       emailAddress: "",
-      password: ""
+      password: "",
+      loggedIn: false
     };
   },
   methods: {
@@ -85,8 +136,6 @@ export default {
         alert("All fields are required");
       } else if (!emailValidator.validate(this.emailAddress)) {
         alert("Email is not valid");
-      } else {
-        $("#RegisterUserModal").modal("hide");
       }
 
       this.$http
@@ -99,9 +148,8 @@ export default {
         })
         .then(
           function(response) {
-            this.login(this.username, this.password).then(function() {
-              $("#RegisterUserModal").modal("hide");
-            });
+            this.login(this.username, this.emailAddress, this.password)
+            $("#RegisterUserModal").modal("hide");
             alert("Success");
           },
           function(error) {
@@ -113,27 +161,63 @@ export default {
           }
         );
     },
-    login: function(username, password) {
-      this.$http
-        .post(this.serverAddress + "users/login/",
-          {
-            username: this.username,
-            email: this.emailAddress,
-            password: this.password
-          }
-        )
-        .then(function(response) {
-            this.authToken = response.data["token"];
-            this.loggedUserId = response.data["id"];
-        })
-        .catch(function(error) {
-          console.log(error);
-          if (error.status == 400) {
-            alert("Incorrect username or password.");
-          } else {
-            alert("Error: " + error.status);
-          }
-        });
+    login: function(username, email, password) {
+      if (username == "") {
+        this.$http
+          .post(this.serverAddress + "users/login/", {
+            email: email,
+            password: password
+          })
+          .then(function(response) {
+            localStorage.setItem("authToken", response.data["token"]);
+            localStorage.setItem("id", response.data["id"]);
+            $("#LoginUserModal").modal("hide");
+            this.loggedIn = true
+          })
+          .catch(function(error) {
+            console.log(error);
+            if (error.status == 400) {
+              alert("Incorrect username or password.");
+            } else {
+              alert("Error: " + error.status);
+            }
+          });
+      } else {
+        this.$http
+          .post(this.serverAddress + "users/login/", {
+            username: username,
+            password: password
+          })
+          .then(function(response) {
+            localStorage.setItem("authToken", response.data["token"]);
+            localStorage.setItem("id", response.data["id"]);
+            $("#LoginUserModal").modal("hide");
+            this.loggedIn = true
+          })
+          .catch(function(error) {
+            console.log(error);
+            if (error.status == 400) {
+              alert("Incorrect username or password.");
+            } else {
+              alert("Error: " + error.status);
+            }
+          });
+      }
+    },
+    loginUser: function() {
+      this.login(this.username, this.emailAddress, this.password)
+    },
+    getToken: function () {
+      return localStorage.getItem("authToken");
+    },
+
+    getUserId: function () {
+      return parseInt(localStorage.getItem("id"));
+    },
+    logout: function() {
+        localStorage.removeItem("authToken")
+        localStorage.removeItem("id")
+        this.loggedIn = false
     }
   }
 };
