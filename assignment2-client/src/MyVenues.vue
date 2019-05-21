@@ -109,7 +109,7 @@ export default {
       );
     },
     getVenue: function(id) {
-      this.$router.push({ name: "Venue", params: { venueid: id } });
+      this.$router.push({ name: "MyVenue", params: { venueid: id } });
     }
   }
 };
