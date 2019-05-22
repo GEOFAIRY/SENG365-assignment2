@@ -5,6 +5,7 @@ import Venue from './Venue.vue'
 import AddVenue from './AddVenue.vue'
 import MyVenues from './MyVenues.vue'
 import MyVenue from './MyVenue.vue'
+import User from './User.vue'
 
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
@@ -40,6 +41,11 @@ const routes = [
     path: "/myvenues/:venueid",
     name: "MyVenue",
     component: MyVenue
+  },
+  {
+    path: "/users/:userid",
+    name: "User",
+    component: User
   },
 ];
 

@@ -3,6 +3,7 @@
     <div v-if="loggedIn === true" id="loggedIn">
       <p v-if="username != ''">Logged in as: {{ username }}</p>
       <p v-else>Logged in as: {{ emailAddress }}</p>
+      <button type="button" class="btn btn-primary" v-on:click="viewUser()">View User</button><br><br>
       <button type="button" class="btn btn-primary" v-on:click="logout()">Logout</button>
       <router-link :to="{name: 'AddVenue'}">
         <button type="button" class="btn btn-primary">New venue</button>
@@ -220,6 +221,10 @@ export default {
         localStorage.removeItem("authToken")
         localStorage.removeItem("id")
         this.loggedIn = false
+        location.reload()
+    },
+    viewUser() {
+      this.$router.push({ name: "User", params: { userid: this.$getUserId() } });
     }
   }
 };
