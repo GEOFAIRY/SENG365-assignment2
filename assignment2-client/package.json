@@ -2,7 +2,6 @@
   "name": "assignment2-client",
   "description": "A Vue.js project",
   "version": "1.0.0",
-  "author": "Kyran <kst84@uclive.ac.nz>",
   "license": "MIT",
   "private": true,
   "scripts": {

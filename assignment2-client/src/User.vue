@@ -13,16 +13,18 @@
       <h5>Family Name: {{ user.familyName}}</h5>
     </div>
     <div id="mainBody">
-      
+      <img v-bind:src="getPhoto()">
     </div>
   </div>
 </template>
 
 <script>
+import defaultPhoto from "./assets/default.png";
 export default {
   data() {
     return {
-      user: {}
+      user: {},
+      defaultVenuePhoto: defaultPhoto,
     };
   },
   mounted: function() {
@@ -42,6 +44,11 @@ export default {
             this.errorFlag = true;
           }
         );
+    },
+    getPhoto: function() {
+        var link = this.serverAddress + "users/" + this.$route.params.userid + "/photo"
+        console.log(link)
+        return link
     }
   }
 };
